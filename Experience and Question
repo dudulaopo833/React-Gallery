@@ -1,0 +1,15 @@
+#Experience:
+1. __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ 
+是因为引用了React Developer Tool（chrome 应用商店）， 并且因为Yeoman把真实的代码用iframe嵌入进去，　所以需要parent!
+2.
+imageData.forEach(function(value,index){
+  imageFigure.push(<ImgFigureComponent data={value} key={index}/>);
+});//如果没有key 属性，会有这个Warning: Each child in an array or iterator should have a unique "key" prop. Check the render method of `AppComponent`
+
+
+# Question:
+let url = '../images/' + item.fileName;
+//let imageUrl = require(url); //Cannot get the image
+
+let imageUrl = require('../images/' + item.fileName); //Can get the image
+
