@@ -5,7 +5,7 @@
 imageData.forEach(function(value,index){
   imageFigure.push(<ImgFigureComponent data={value} key={index}/>);
 });//如果没有key 属性，会有这个Warning: Each child in an array or iterator should have a unique "key" prop. Check the render method of `AppComponent`
-
+3. 在scss 文件中，在子样式嵌套在父样式中，需要用@at-root{}把子样式包起来，这样做使得编译出来的css和父样式同层，避免了性能问题
 
 # Question:
 let url = '../images/' + item.fileName;
