@@ -1,0 +1,42 @@
+# 慕课网站　http://www.imooc.com/learn/507 & http://www.imooc.com/learn/652
+重要提示：
+最新版本的 react-webpack 已经好久没有更新了，webpack 依然用1.12.0的版本，没有json-loader， 没有sass-loader。 
+1. 所以需要自己安装json-loader进来，然后改cfg/default 的配置文件，把json-loader加进去，并且require 的时候需要加上json!. eg: require('json!../data/imageData.json').  
+2. 安装node-sass3.8.0 和sass-loader4.0.0版本，千万不要安装最新版本的sass， 要不然会报各种版本依赖错误！
+
+# Commands to setup the Project.
+1. npm install -g yo
+2.yo --version
+3. npm install -g generator-react-webpack // 首先必须先安装generator 才能用yo访问得到
+4. npm ls -g --depth=1 2>/dev/null | grep generator- //查看安装的树状历史纪录，npm ls -g --depth=1 访问能一层的安装， 2>/dev/null 过滤错误消息, grep generator- 查找generator 开头的包
+5. yo react-webpack React-Gallery
+6. npm install --save-dev json-loader(必须在项目路径下有package.json)
+在webpack配置文件中cfg/default.js 引用json-loader. 并且在require的时候需要用json!. eg:require('json!../data/imageData.json');
+7. npm install -g webpack 需要安装webpack, 才能默认可以webpack2.0　不需要引用json-loader. 如果没有做这一步，即使做了下一步也还不是不行；且需要看package.Json 引用的版本到底是哪个(因为yo react-webpack 一直没有更新，webpack 一直用的是1.12.0的版本，所以需要自己另外安装json-loader)
+8.  npm install --save-dev node-sass@3.8.0 
+    npm install --save-dev sass-loader@4.0.0
+安装这样的sass 版本才不会有问题，如果不指定版本，直接安装最新版本，那么会报各种依赖的错误
+
+# 配置文件解析：
+
+1 .babelrc - babel的配置文件，用来解析ES6
+2 .editorconfig - 各IDE的文件格式配置文件，官网是 editorconfig.org
+3 .eslintrc - jsx 代码检测工具
+4 .yo-rc.jason - Yoeman 配置文件
+5 karma.conf.js - 自动化测试工具配置文件
+6 package.json - npm 包依赖配置文件
+7 server.js - ???
+8 webpack.config.js - webpack配置文件
+
+# 启动项目
+1. 启动命令：npm start / npm run start
+2. build命令：npm run dist
+
+# 项目笔记
+1. __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ 是因为引用了React Developer Tool（chrome 应用商店）， 并且因为Yeoman把真实的代码用iframe嵌入进去，　所以需要parent!
+
+2. warning  'imageDatas' is defined but never used 
+.eslintrc文件里面的修改如下
+"no-unused-vars": 0,
+
+3. 现在安装的没有gruntfile.js，而且webpack.config.js和webpack.dist.config.js中好多东西都扔到了cfg中，老师讲的这个loader的配置在cfg/default.js中
