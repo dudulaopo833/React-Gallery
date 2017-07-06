@@ -16,6 +16,11 @@
 8.  npm install --save-dev node-sass@3.8.0 
     npm install --save-dev sass-loader@4.0.0
 安装这样的sass 版本才不会有问题，如果不指定版本，直接安装最新版本，那么会报各种依赖的错误
+9. warning  'imageDatas' is defined but never used 
+.eslintrc文件里面的修改如下
+"no-unused-vars": 0,
+10. 现在安装的没有gruntfile.js，而且webpack.config.js和webpack.dist.config.js中好多东西都扔到了cfg中，老师讲的这个loader的配置在cfg/default.js中
+
 
 # 配置文件解析：
 
@@ -31,12 +36,3 @@
 # 启动项目
 1. 启动命令：npm start / npm run start
 2. build命令：npm run dist
-
-# 项目笔记
-1. __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ 是因为引用了React Developer Tool（chrome 应用商店）， 并且因为Yeoman把真实的代码用iframe嵌入进去，　所以需要parent!
-
-2. warning  'imageDatas' is defined but never used 
-.eslintrc文件里面的修改如下
-"no-unused-vars": 0,
-
-3. 现在安装的没有gruntfile.js，而且webpack.config.js和webpack.dist.config.js中好多东西都扔到了cfg中，老师讲的这个loader的配置在cfg/default.js中
