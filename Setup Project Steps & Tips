@@ -6,7 +6,7 @@
 
 # Commands to setup the Project.
 1. npm install -g yo
-2.yo --version
+2. yo --version
 3. npm install -g generator-react-webpack // 首先必须先安装generator 才能用yo访问得到
 4. npm ls -g --depth=1 2>/dev/null | grep generator- //查看安装的树状历史纪录，npm ls -g --depth=1 访问能一层的安装， 2>/dev/null 过滤错误消息, grep generator- 查找generator 开头的包
 5. yo react-webpack React-Gallery
@@ -16,11 +16,13 @@
 8.  npm install --save-dev node-sass@3.8.0 
     npm install --save-dev sass-loader@4.0.0
 安装这样的sass 版本才不会有问题，如果不指定版本，直接安装最新版本，那么会报各种依赖的错误
-9. warning  'imageDatas' is defined but never used 
+9. 现在安装的没有gruntfile.js，而且webpack.config.js和webpack.dist.config.js中好多东西都扔到了cfg中，老师讲的这个loader的配置在cfg/default.js中
+10.warning  'imageDatas' is defined but never used 
 .eslintrc文件里面的修改如下
 "no-unused-vars": 0,
-10. 现在安装的没有gruntfile.js，而且webpack.config.js和webpack.dist.config.js中好多东西都扔到了cfg中，老师讲的这个loader的配置在cfg/default.js中
-
+11. warning Trailing spaces not allowed no-trailing-spaces
+在.eslintrc文件里面修改如下，代表允许代码尾部有空格， 和允许在空行中使用空格
+"no-trailing-spaces": [0, { "skipBlankLines": true }],
 
 # 配置文件解析：
 
