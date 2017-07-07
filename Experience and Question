@@ -16,6 +16,7 @@ offsetWidth：对象整体的实际宽度，包滚动条等边线，会随对象
 let url = '../images/' + item.fileName;
 //let imageUrl = require(url); //Cannot get the image
 let imageUrl = require('../images/' + item.fileName); //Can get the image
+Tip: 发现最终console 出来的imageurl 是"imageUrl":"/assets/fdb9290590198d8d1d9fa23bdd296c86.jpg"}
 
 2. 为什么会有下面这些奇怪的现象？是因为global 和开发环境安装了不同版本的webpack吗？
 用"json-loader": "^0.5.4","webpack": "^1.12.0", 在这个项目，但是本机global 已经安装了webpack3.0.0，
