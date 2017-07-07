@@ -10,6 +10,10 @@ imageData.forEach(function(value,index){
 scrollWidth：对象的实际内容的宽度，不包边线宽度，会随对象中内容超过可视区后而变大。 
 clientWidth：对象内容的可视区的宽度，不包滚动条等边线，会随对象显示大小的变化而改变。 
 offsetWidth：对象整体的实际宽度，包滚动条等边线，会随对象显示大小的变化而改变。
+5. 箭头函数的用法
+//let getRangeRandom = (low, high) => (Math.floor(Math.random()*(high - low) + low));//向下取整
+let getRangeRandom = (low, high) => {return (Math.floor(Math.random()*(high - low) + low))}; //如果函数体很多代码行，用{}括起来，并且需要有return 语句
+//let getRangeRandom = (low, high) => ({a: 0, b: 0});//如果直接返回一个对象，需要用（）把对象扩起来
 
 # Question:
 1. 为什么不能把url提取出来？
