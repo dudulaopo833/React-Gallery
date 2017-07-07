@@ -12,8 +12,16 @@ clientWidth：对象内容的可视区的宽度，不包滚动条等边线，会
 offsetWidth：对象整体的实际宽度，包滚动条等边线，会随对象显示大小的变化而改变。
 
 # Question:
+1. 为什么不能把url提取出来？
 let url = '../images/' + item.fileName;
 //let imageUrl = require(url); //Cannot get the image
-
 let imageUrl = require('../images/' + item.fileName); //Can get the image
+
+2. 为什么会有下面这些奇怪的现象？是因为global 和开发环境安装了不同版本的webpack吗？
+用"json-loader": "^0.5.4","webpack": "^1.12.0", 在这个项目，但是本机global 已经安装了webpack3.0.0，
+a. 有时package.json和cfg/default.js 不需要配置json-loader，也可以直接require('../data/imageData.json'); 官网说webpack2.0 以上自带了json-loader 的功能，不需要再引用进来
+b. 有时会就需要package.json和cfg/default.js配置json-loader,并且npm install --save-dev json-loader@0.5.4, 并且用require('json!../data/imageData.json');
+c. 有时候第二种也不行，就需要改成require('../data/imageData.json'); require('!json!../data/imageData.json');才能生效，要不然会报Module build failed: SyntaxError: Unexpected token m
+d. 2017/7/7我uninstall了本机global的webpack3.0.0,并且require('../data/imageData.json');可以生效，需要看看重启之后会怎样!
+
 
