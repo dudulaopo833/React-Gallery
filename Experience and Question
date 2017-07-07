@@ -15,7 +15,7 @@ offsetWidth：对象整体的实际宽度，包滚动条等边线，会随对象
 let getRangeRandom = (low, high) => {return (Math.floor(Math.random()*(high - low) + low))}; //如果函数体很多代码行，用{}括起来，并且需要有return 语句
 //let getRangeRandom = (low, high) => ({a: 0, b: 0});//如果直接返回一个对象，需要用（）把对象扩起来
 6.需要注意，React 中是需要驼峰标识，比如fontSize， msTransform
-['','ms','webkit','moz'].forEach((value)=> {
+['','Ms','Webkit','Moz'].forEach((value)=> {
 		styleData[value + 'Transform'] = 'rotate(' + this.props.styleData.rotate + 'deg)';
 });
 
