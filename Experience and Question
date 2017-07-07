@@ -39,6 +39,7 @@ c. 有时候第二种也不行，就需要改成require('../data/imageData.json'
 d. 2017/7/7我uninstall了本机global的webpack3.0.0,并且require('../data/imageData.json');可以生效，需要看看重启之后会怎样!
 
 3. 需要去学习CSS中的transform 中的rotate 和translate
+4. 需要解决一个bug，多次居中之后，就一直都是排在左边了
 
 
 Others Example:
