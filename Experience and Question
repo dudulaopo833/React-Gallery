@@ -33,4 +33,6 @@ b. 有时会就需要package.json和cfg/default.js配置json-loader,并且npm in
 c. 有时候第二种也不行，就需要改成require('../data/imageData.json'); require('!json!../data/imageData.json');才能生效，要不然会报Module build failed: SyntaxError: Unexpected token m
 d. 2017/7/7我uninstall了本机global的webpack3.0.0,并且require('../data/imageData.json');可以生效，需要看看重启之后会怎样!
 
+3. 需要去学习CSS中的transform 中的rotate 和translate
+
 
