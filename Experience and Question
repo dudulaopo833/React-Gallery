@@ -1,5 +1,5 @@
 #Experience:
-1. __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ 
+1. <script>__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
 是因为引用了React Developer Tool（chrome 应用商店）， 并且因为Yeoman把真实的代码用iframe嵌入进去，　所以需要parent!
 2.
 imageData.forEach(function(value,index){
