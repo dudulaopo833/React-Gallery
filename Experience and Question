@@ -34,6 +34,8 @@ transform: rotateY(180deg) translateZ(1px);
 }
 icon-upload:before{//or icon-upload:after
 	content: "\f066";
+	-webkit-font-smoothing: antialiased:
+	-moz-osx-font-smoothing: grayscale;//这个使得webfont在白字深底情况下，不会加粗 
 }
 .use-icon-font.icon-upload{
 	color:blue;
