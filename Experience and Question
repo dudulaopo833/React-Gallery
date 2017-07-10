@@ -32,7 +32,7 @@ transform: rotateY(180deg) translateZ(1px);
        url('../font/icon/Icon-Font.tff') format('truetype');//Safari,Android,ios
        url('../font/icon/Icon-Font.svg') format('svg');//Legacy ios
 }
-icon-upload:before{
+icon-upload:before{//or icon-upload:after
 	content: "\f066";
 }
 .use-icon-font.icon-upload{
