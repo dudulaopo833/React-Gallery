@@ -23,6 +23,26 @@ let getRangeRandom = (low, high) => {return (Math.floor(Math.random()*(high - lo
 /*当.img-figure旋转时，.img-back又旋转了180度，旋转度数为360,因为translateZ(1px)，位于正面图像的上方*/
 transform: rotateY(180deg) translateZ(1px);
 8. 在reArrange 函数中，把中间和上部的图片重新添加到总数组中，要按先来后上的顺序去做， 要不然会定位不准
+9. 用webfont的时候需要在webpack config 中的loader 上添加woff，tff，svg，eot 的配置
+@font-face{
+   font-family: "Icon-Font";
+   src:url('../font/icon/Icon-Font.eot');//IE9 compat model
+   src:url('../font/icon/Icon-Font.eot?#iefix') format('embedded-opentype');//IE6-IE8
+       url('../font/icon/Icon-Font.woff') format('woff');//Modern Browsers
+       url('../font/icon/Icon-Font.tff') format('truetype');//Safari,Android,ios
+       url('../font/icon/Icon-Font.svg') format('svg');//Legacy ios
+}
+icon-upload:before{
+	content: "\f066";
+}
+.use-icon-font.icon-upload{
+	color:blue;
+	font-size:25px;
+	text-decoration: underline;
+	font-family: Icon-Font;
+}
+
+
 
 # Question:
 1. 为什么不能把url提取出来？
