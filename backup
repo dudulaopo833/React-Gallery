@@ -1,0 +1,337 @@
+/*require('normalize.css/normalize.css');*/
+require('styles/App.scss');
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+//Import the image data from json file. json-loader 0.5.4 version need preppend the json!
+let imageData = require('../data/imageData.json');
+/*
+//To auto append the image real url to imageData using auto-run function
+imageData = (function(imageDataArr){
+	for(let i=0; i<imageDataArr.length; i++){
+		let singleImageData = imageDataArr[i];
+		let url = '../images/' + singleImageData.fileName;
+		//singleImageData.imageUrl = require(url);//Cannot get the image
+		//singleImageData.imageUrl = require('../images/11.jpg');//Can get the image
+		singleImageData.imageUrl = require('../images/' + singleImageData.fileName);//Can get the image
+		imageDataArr[i] = singleImageData;
+	}
+	return imageDataArr;
+})(imageData);*/
+//Question: Why not define the imageUrl in json file instead?
+//Question: Why if require(url) can not work? Is it the same as the first question?
+
+imageData = (function(imageDataArr){
+	return imageDataArr.map(function(item){
+		let url = '../images/' + item.fileName;
+		//let imageUrl = require(url); //Cannot get the image
+		let imageUrl = require('../images/' + item.fileName); //Can get the image
+		return Object.assign(item,{'imageUrl': imageUrl}); //拷贝且不能变，但是assign 仅仅拷贝一层
+	});
+})(imageData);
+
+//取随机数的公有方法
+//let getRangeRandom = (low, high) => Math.floor(Math.random()*(high - low) + low);//向下取整
+let getRangeRandom = (low, high) => {return Math.floor(Math.random()*(high - low) + low)}; //如果函数体很多代码行，用{}括起来，并且需要有return 语句
+//let getRangeRandom = (low, high) => ({a: 0, b: 0});//如果直接返回一个对象，需要用（）把对象扩起来
+
+
+//取随机正负0-30度角度的公有方法
+let getRadomRotate = () => (((Math.random() > 0.5) ? '+' : '-') +  Math.floor(Math.random() * 30));
+
+
+class ImgFigureComponent extends React.Component{
+	constructor(props){
+		super(props);
+		
+		this.clickHandler = this.clickHandler.bind(this);
+	}
+	
+	clickHandler(e){
+		if(!this.props.arrangeData.isCenter){//如果图片不居中，那么居中图片
+			this.props.center();
+		}else{//如果图片居中，那么翻转图片
+			this.props.inverse();
+		}
+		e.stopPropagation();
+		e.preventDefault();
+	}
+	
+	render(){
+		//获取并且拼接style样式
+		let styleData = {};
+		if(this.props.arrangeData.pos){
+			styleData = this.props.arrangeData.pos;
+		}//取绝对定位的值
+		if(this.props.arrangeData.rotate){
+			['','Ms','Webkit','Moz'].forEach((value)=> {
+				styleData[value + 'Transform'] = 'rotate(' + this.props.arrangeData.rotate + 'deg)';//这里需要注意，React 中是需要驼峰标识，比如fontSize， MsTransform
+			});
+		}//取rotate的值，并且兼容各种浏览器
+		
+		//设置中心图片的z-index，使得不会被其他图片遮挡
+		if(this.props.arrangeData.isCenter){
+			styleData.zIndex = 11;//React 中是需要驼峰标识，比如fontSize， MsTransform
+		}
+		
+		//判断image 到底要不要翻转
+		let imgFClass = 'image-figure';
+		imgFClass += this.props.arrangeData.isInverse ? ' is-inverse' : '';
+		
+		return(//figure and figcaption 是 html5 的标签，表示独立流内容
+			<figure className={imgFClass} style={styleData} onClick={this.clickHandler}>
+			  <img src={this.props.imgData.imageUrl} alt={this.props.imgData.title} />
+			  <figcaption>
+				<h2 className="image-title">{this.props.imgData.title}</h2>
+				<div className="image-back" onClick={this.handleClick}>
+					<p>
+						{this.props.imgData.description}
+					</p>
+				</div>
+			  </figcaption>
+			</figure>
+		);
+	}
+}
+
+class ControlUnitComponent extends React.Component{
+	constructor(props){
+		super(props);
+		this.clickHandler = this.clickHandler.bind(this);
+	}
+	
+	clickHandler(e){
+		//如果不居中，则居中它
+		if(!this.props.arrangeData.isCenter){
+			this.props.center();	
+		}else{//如果图片居中，那么翻转图片
+			this.props.inverse();
+		}
+		e.stopPropagation();
+		e.preventDefault();
+	}
+	
+	render(){
+		let controllerUnitClassName = 'controller-unit';
+		//如果居中，添加居中样式
+		if(this.props.arrangeData.isCenter){
+			controllerUnitClassName += ' is-center';
+			
+			if(this.props.arrangeData.isInverse){
+				controllerUnitClassName += ' is-inverse';
+			}
+		}
+
+		return <span className={controllerUnitClassName} onClick={this.clickHandler}></span>
+	}
+}
+
+class AppComponent extends React.Component {
+	constructor(props){
+		super(props);
+		
+		//定义每个部分布局的位置范围的结构
+		this.ConstantP = {
+			centerPos: {
+				left: 0,
+				right: 0
+			},
+			hPosRange: {//水平方向的取值范围
+				leftSecX:[0,0],
+				rightSecX:[0,0],
+				y:[0,0]
+			},
+			vPosRange: {
+				x:[0,0],
+				topSecY:[0,0]
+			}
+		};
+		
+		this.state = {
+			imgArr : [
+				/*{
+					pos:{left: '0', top : '0'},
+					rotate:0,//旋转角度
+					isInverse: false，//代表图片的正反面，false代表正面
+					isCenter: false,//代表图片是否居中
+				}*/
+			]
+		};
+	}
+  
+	render() {
+		let controllerUnits = [],
+			imageFigure = [];
+		
+		//遍历数据，初始化每个图片的state的top和left为最左上角；并且生成每个图片的组件
+		imageData.forEach((value,index)=>{
+			if(!this.state.imgArr[index]){
+				this.state.imgArr[index] = {
+					pos:{left: 0, top: 0},
+					rotate : 0,
+					isInverse : false,
+					isCenter : false
+				};
+			}//因为下面要传参数到imgeFigure， 所以先初始化数据
+			//如果没有key 属性，会有这个Warning: Each child in an array or iterator should have a unique "key" prop. Check the render method of `AppComponent`
+			imageFigure.push(<ImgFigureComponent imgData={value} key={index} ref={'imgFigure' + index} arrangeData={this.state.imgArr[index]} inverse={this.inverseImage(index)} center={this.centerImage(index)}/>);
+			controllerUnits.push(<ControlUnitComponent key={index} arrangeData={this.state.imgArr[index]} center={this.centerImage(index)} inverse={this.inverseImage(index)}/>);
+		});
+	  
+		return (
+			<section className="stage" ref="stage">
+			  <section className="image-section">
+				{imageFigure}
+			  </section>
+			  <nav className="controller-nav">
+				{controllerUnits}
+			  </nav>
+			</section>
+		);
+	}
+  
+	//组件加载以后
+	componentDidMount(){
+		//拿到舞台的大小
+		let stageDOM = ReactDOM.findDOMNode(this.refs.stage);
+		//拿到一个imageFigure的大小
+		let imgFigureDOM = ReactDOM.findDOMNode(this.refs.imgFigure0);
+		//计算每个部分的位置范围
+		this.calculateRange(stageDOM,imgFigureDOM);//用this 来引用component 中定义的方法
+		//重新布局所有图片
+		this.reArrange(0);	
+	}
+	
+	/*
+	*计算每个部分的位置范围
+	*@Param 舞台DOM，图片DOM
+	*/
+	calculateRange(stageDOM,imgFigureDOM){
+		//拿到舞台的大小
+		let stageWidth = stageDOM.scrollWidth,
+		stageHeight = stageDOM.scrollHeight,
+		halfStageW = Math.floor(stageWidth / 2),//向下取整
+		halfStageH = Math.floor(stageHeight / 2);
+			
+		//拿到一个imageFigure的大小
+		let imageWidth = imgFigureDOM.scrollWidth,
+		imageHeight = imgFigureDOM.scrollHeight,
+		halfImageW = Math.floor(imageWidth / 2),
+		halfImageH = Math.floor(imageHeight / 2);
+			
+		//计算中心图片的位置点
+		this.ConstantP.centerPos = {
+			left: halfStageW - halfImageW,
+			top: halfStageH - halfImageH
+		};
+		//计算两边图片的位置范围,都是以图片的左上角的xy为基点
+		this.ConstantP.hPosRange.leftSecX[0] = 0 - halfImageW;
+		this.ConstantP.hPosRange.leftSecX[1] = halfStageW - halfImageW * 3;
+		this.ConstantP.hPosRange.rightSecX[0] = halfStageW + halfImageW;
+		this.ConstantP.hPosRange.rightSecX[1] = stageWidth - halfImageW;
+		this.ConstantP.hPosRange.y[0] = 0 - halfImageH;
+		this.ConstantP.hPosRange.y[1] = stageHeight - halfImageH;
+		
+		//计算上面图片的位置范围,都是以图片的左上角的xy为基点
+		this.ConstantP.vPosRange.x[0] = halfStageW - imageWidth;
+		this.ConstantP.vPosRange.x[1] = halfStageW;
+		this.ConstantP.vPosRange.topSecY[0] = 0 - halfImageH;
+		this.ConstantP.vPosRange.topSecY[1] = halfStageH - halfImageH * 3; 
+	}
+	
+	/*
+	*重新布局所有图片
+	*@Param 居中图片的index
+	*/
+	reArrange(centerIndex){
+		//取各种值方便后面处理
+		let totalImgArr = this.state.imgArr,
+		constant = this.ConstantP,
+		centerPos = constant.centerPos,
+		hPosRange = constant.hPosRange,
+		vPosRange = constant.vPosRange,
+		leftSecXRange = hPosRange.leftSecX,
+		rightSecXRange = hPosRange.rightSecX,
+		hSecYRange = hPosRange.y,
+		topSecXRange = vPosRange.x,
+		topSecYRange = vPosRange.topSecY,
+		//上部分布局的图片的信息， 0-1个
+		topImgArr = [],
+		topImgNumber = Math.floor(Math.random() * 2),//向上取整0或者1
+		topImgIndex = 0,
+		//居中图片的信息
+		centerImgArr = totalImgArr.splice(centerIndex,1);//从总图片中，取出中间图片，总图片库会删除掉中间图片
+
+		//第一步，布局中间图片
+		centerImgArr[0]= {pos : centerPos, rotate : 0, isInverse : false, isCenter: true};
+		//第二步，布局上部图片
+		topImgIndex = Math.floor(Math.random()*(totalImgArr.length - topImgNumber));//随机生成将要取的图片的index
+		topImgArr = totalImgArr.splice(topImgIndex,topImgNumber); //取出上部分图片，一个或者没有
+		topImgArr.forEach((value,index) => {
+			topImgArr[index] = {
+				pos : {
+					left: getRangeRandom(topSecXRange[0],topSecXRange[1]),
+					top: getRangeRandom(topSecYRange[0],topSecYRange[1])					
+				},
+				rotate : getRadomRotate(),
+				isInverse : false,
+				isCenter: false
+			};
+		});
+		//第三步， 布局左右图片
+		for(let i = 0, j = totalImgArr.length, k = j / 2; i < j; i ++){
+			let xRange = i < k ? leftSecXRange : rightSecXRange; //前半部分属于左边，后半部分属于右边
+			totalImgArr[i] = {
+				pos : {
+					left : getRangeRandom(xRange[0],xRange[1]),
+					top : getRangeRandom(hSecYRange[0],hSecYRange[1])					
+				},
+				rotate : getRadomRotate(),
+				isInverse : false,
+				isCenter : false
+			}
+		}
+		//第四步，把中间和上部图片合并回来,这里需要注意要按先来后上(先上部，后中间)的顺序加回来，要不然定位中间图片会定位不准
+		if(topImgArr && topImgArr[0]){//这里犯了低级错误，写成totalImgArr，导致没有topImgArr 的时候加了undefined 进来，就图片都跑左边去了！用了半天才找到问题所在！
+			totalImgArr.splice(topImgIndex, 0, topImgArr[0]);
+		}
+		totalImgArr.splice(centerIndex, 0, centerImgArr[0]);
+		//第五步，setState来重新render
+		this.setState({
+			imgArr : totalImgArr
+		});	
+	}
+	
+	/*
+	*翻转中间图片函数
+	*@Param index 待翻转图片在数组中的index
+	*@Return {function}一个闭包函数（代执行函数）
+	*/
+	inverseImage (index){
+		return ()=>{
+			let imgArrToInverse = this.state.imgArr;
+			imgArrToInverse[index].isInverse = ! imgArrToInverse[index].isInverse; //取反
+			this.setState({
+				imgArr : imgArrToInverse
+			});
+		};
+	}
+	
+	/*
+	*居中点击的图片
+	*@Param index 待居中的图片在数组中的index
+	*@Return {function} 一个闭包函数
+	*/
+	centerImage(index){
+		return ()=>{
+			this.reArrange(index);
+		};
+	}
+	
+}
+
+AppComponent.defaultProps = {
+};
+
+export default AppComponent;
